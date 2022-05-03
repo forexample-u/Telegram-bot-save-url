@@ -15,7 +15,7 @@ namespace App.Message
         /// Отправить одно или несколько сообщений пользователю
         /// </summary>
         /// <param name="message">Можно передать через запятую несколько сообщений</param>
-        void Send(params string[] message);
+        void Send(params string[] messages);
 
         /// <summary>
         /// Прочитать сообщение пользователя

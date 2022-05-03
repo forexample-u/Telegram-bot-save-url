@@ -1,2 +1,5 @@
-﻿Console.WriteLine("Telegram-bot-save-url");
-//Тут будет код запуска
+﻿using App.Assistent;
+using App.TelegramMessage;
+
+Assistent telegramAssistent = new Assistent(new TelegramMessage());
+telegramAssistent.Start();
