@@ -87,9 +87,10 @@ namespace App.ApiMessager
             await bot.SendTextMessageAsync(updateMessage.Message.Chat, message, replyMarkup: keyboard);
         }
 
-        public static async void SendMessage(string message)
+        public static void SendMessage(string message)
         {
-            await bot.SendTextMessageAsync(updateMessage.Message.Chat, message);
+            Task.Run(() => bot.SendTextMessageAsync(updateMessage.Message.Chat, message));
+            Thread.Sleep(100);
         }
 
         public static string ReadMessage()
