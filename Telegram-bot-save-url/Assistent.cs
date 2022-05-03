@@ -8,8 +8,14 @@ using App.TelegramMessage;
 
 namespace App.Assistent
 {
+    /// <summary>
+    /// Сам ассистент
+    /// </summary>
     public class Assistent
     {
-
+        /// <summary>
+        /// Запустить ассистента
+        /// </summary>
+        public void Start();
     }
 }
