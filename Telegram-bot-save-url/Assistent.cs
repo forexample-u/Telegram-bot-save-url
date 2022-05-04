@@ -24,6 +24,7 @@ namespace App.Assistent
         public Assistent(IMessage newMessage)
         {
             message = newMessage;
+            CategoriaAndLinksUrl.Add("Все", new HashSet<string>());
         }
 
         /// <summary>
@@ -54,6 +55,12 @@ namespace App.Assistent
         {
             message.Send("Впишите категорию");
             currentCategoria = message.Read();
+            if (currentCategoria == "Все")
+            {
+                message.Send("Категория - \"Все\", является зарезервированным, вы не можете его использовать");
+                return;
+            }
+
             message.Send("Впишите url, который нужно сохранить");
             currentLinkUrl = message.Read();
 
@@ -76,6 +83,7 @@ namespace App.Assistent
                     CategoriaAndLinksUrl.Add(currentCategoria, new HashSet<string>());
                 }
                 CategoriaAndLinksUrl[currentCategoria].Add(currentLinkUrl);
+                CategoriaAndLinksUrl["Все"].Add(currentLinkUrl);
             }
         }
 
@@ -99,7 +107,14 @@ namespace App.Assistent
                     case "/get-links":
                         message.Menu("Выберите вашу сохранёную категорию", CategoriaAndLinksUrl.Keys.ToArray());
                         currentCategoria = message.Read();
-                        PrintByCategoria(currentCategoria);
+                        if(CategoriaAndLinksUrl[currentCategoria].Count == 0)
+                        {
+                            message.Send($"Категория \"{currentCategoria}\" является пустой");
+                        }
+                        else
+                        {
+                            PrintByCategoria(currentCategoria);
+                        }
                         break;
 
                     default:
