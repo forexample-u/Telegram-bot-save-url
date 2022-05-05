@@ -12,10 +12,10 @@ namespace App.Assistent
     /// </summary>
     public class Assistent
     {
-        public IMessage message;
-        public string currentCategoria { get; private set; }
-        public string currentLinkUrl { get; private set; }
-        Dictionary<string, HashSet<string>> CategoriaAndLinksUrl = new Dictionary<string, HashSet<string>>();
+        private IMessage message;
+        private string currentCategoria { get; set; }
+        private string currentLinkUrl { get; set; }
+        private Dictionary<string, HashSet<string>> CategoriaAndLinksUrl = new Dictionary<string, HashSet<string>>();
 
         /// <summary>
         /// В Конструктор передать интерфейсный месседже
