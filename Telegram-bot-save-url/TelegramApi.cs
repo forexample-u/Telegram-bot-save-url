@@ -12,7 +12,7 @@ using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types.ReplyMarkups;
 using Newtonsoft.Json;
 
-namespace App.ApiMessager
+namespace App.MessagerApi
 {
     /// <summary>
     /// Подключение к API Telegram
@@ -25,10 +25,20 @@ namespace App.ApiMessager
         private static Update updateMessage = new Update();
         private static bool isUserInput = false;
         private static bool isMenuInput = false;
+        private static bool isStart = false;
 
-        static TelegramApi()
+        public static void Start()
         {
-            Task.Run(() => AsyncExecute());
+            if (!isStart) //Защита на случай попытки запустить более одного раза
+            {
+                isStart = true;
+                Task.Run(() => AsyncExecute());
+            }
+        }
+
+        public static void Stop()
+        {
+            Task.Run(() => AsyncStop());
         }
 
         private static async Task AsyncExecute()
@@ -48,6 +58,11 @@ namespace App.ApiMessager
                     cancellationToken
                 );
             });
+        }
+
+        private static async Task AsyncStop()
+        {
+            await bot.CloseAsync();
         }
 
         //Handle
@@ -71,7 +86,8 @@ namespace App.ApiMessager
             }
         }
 
-        public static async void SendMenu(string message, string[] buttons)
+
+        public static async void SendMenuMessage(string message, string[] buttons)
         {
             var buttonsList = new List<KeyboardButton>();
             foreach (var button in buttons)
@@ -87,27 +103,30 @@ namespace App.ApiMessager
             await bot.SendTextMessageAsync(updateMessage.Message.Chat, message, replyMarkup: keyboard);
         }
 
-        public static void SendMessage(string message)
+        public static async Task SendMessage(string message)
         {
-            Task.Run(() => bot.SendTextMessageAsync(updateMessage.Message.Chat, message));
-            Thread.Sleep(100);
+            await Task.Run(() => bot.SendTextMessageAsync(updateMessage.Message.Chat, message));
         }
 
-        public static string ReadMessage()
+        public static async Task<string> ReadMessage()
         {
-            //TODO: убрать do while:
-            //Это решение выполняет свою задачу, оно явлется безопасным (между ответами будет 1 секунда)
-            //Но оно не является самым оптимальным, выходит, что у нас две ветки ждут, одна input (Read) и второй input (HandleInputUserAsync), только один input возврощает свой результат (string), а другая просто крутится всё время (он всех обслуживает её нельзя завершать), вопрос как дать отвественность за сон только одной ветки и выдать ответ другой, то-есть разбудить поток и выдать ему ответ...
-            //Если узнаю тут подпишу, как правильней...
-            do
+            //Всё таки я узнал, чтобы убрать do while, нужно использовать web hock! Если будет вопрос оптимизации (эффективности), то можно избавится от двух циклов
+            string userMessage = "";
+
+            await Task.Run(() =>
             {
-                Thread.Sleep(1000);
-            }
-            while (!isUserInput);
+                do
+                {
+                    Thread.Sleep(1000);
+                }
+                while (!isUserInput);
 
-            isUserInput = false;
+                isUserInput = false;
 
-            return updateMessage.Message.Text;
+                userMessage = updateMessage.Message.Text;
+            });
+
+            return userMessage;
         }
     }
 }
