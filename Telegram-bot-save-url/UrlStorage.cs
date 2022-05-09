@@ -21,8 +21,7 @@ namespace App.Storage
 
         public List<string> GetEntityByKeys(string categoria)
         {
-            List<string> links = new();
-            if (categoriaWithUrl.TryGetValue(categoria, out links))
+            if (categoriaWithUrl.TryGetValue(categoria, out List<string> links))
             {
                 return links;
             }

@@ -28,10 +28,10 @@ namespace App.Command
 
             //start bot
             this.chat.Start();
-            this.chat.SendMessage("Введите /store-link или /get-links");
             ICommand command;
             while (true)
             {
+                this.chat.SendMessage("Введите /store-link или /get-links");
                 string inputeCommand = this.chat.ReadMessage();
                 switch (inputeCommand)
                 {
