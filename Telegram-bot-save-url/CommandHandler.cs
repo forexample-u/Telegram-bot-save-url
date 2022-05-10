@@ -18,7 +18,7 @@ namespace App.Command
         /// <summary>
         /// Выбирает команду
         /// </summary>
-        /// <param name="chat">кому пишмем сообщение</param>
+        /// <param name="chat">кому пишем сообщение</param>
         /// <param name="storage">Храним данные</param>
         public CommandHandler(IChat chat, IStorage storage)
         {
@@ -28,26 +28,14 @@ namespace App.Command
 
             //start bot
             this.chat.Start();
-            ICommand command;
+
             while (true)
             {
                 this.chat.SendMessage("Введите /store-link или /get-links");
-                string inputeCommand = this.chat.ReadMessage();
-                switch (inputeCommand)
-                {
-                    case "/store-link":
-                        command = commandFactory.CreateCommandStoreLinks(this.chat, this.storage);
-                        command.Execute();
-                        break;
+                string inputCommand = this.chat.ReadMessage();
 
-                    case "/get-links":
-                        command = commandFactory.CreateCommandGetLinks(this.chat, this.storage);
-                        command.Execute();
-                        break;
-
-                    default:
-                        break;
-                }
+                commandFactory.CreateCommand(input: inputCommand, name: "/store-link", run: new CommandStoreLink(chat, storage));
+                commandFactory.CreateCommand(input: inputCommand, name: "/get-links",  run: new CommandGetLinks(chat, storage));
             }
         }
     }
