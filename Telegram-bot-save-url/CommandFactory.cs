@@ -10,11 +10,19 @@ namespace App.Command
 {
     public class CommandFactory
     {
-        public void CreateCommand(string input, string name, ICommand run)
+        public ICommand CreateCommand(IChat chat, IStorage storage, string input)
         {
-            if (input == name)
+            if (input == "/store-link")
             {
-                run.Execute();
+                return new CommandStoreLink(chat, storage);
+            }
+            else if (input == "/get-links")
+            {
+                return new CommandGetLinks(chat, storage);
+            }
+            else
+            {
+                return new CommandStart(chat, storage);
             }
         }
     }
