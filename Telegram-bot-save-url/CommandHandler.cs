@@ -10,10 +10,9 @@ namespace App.Command
 {
     public class CommandHandler
     {
-        private IChat chat;
-        private IStorage storage;
-        private string currentCategoria { get; set; }
-        private CommandFactory commandFactory = new CommandFactory();
+        private IChat _chat;
+        private IStorage _storage;
+        private CommandFactory _commandFactory = new CommandFactory();
 
         /// <summary>
         /// Выбирает команду
@@ -22,20 +21,17 @@ namespace App.Command
         /// <param name="storage">Храним данные</param>
         public CommandHandler(IChat chat, IStorage storage)
         {
-            this.chat = chat;
-            this.storage = storage;
-            storage.AddEntity(key: "Все", value: "");
+            _chat = chat;
+            _storage = storage;
+            _storage.AddEntity(key: "Все", value: string.Empty);
 
-            //start bot
-            this.chat.Start();
-
+            _chat.Start();
             while (true)
             {
-                this.chat.SendMessage("Введите /store-link или /get-links");
-                string inputCommand = this.chat.ReadMessage();
-
-                commandFactory.CreateCommand(input: inputCommand, name: "/store-link", run: new CommandStoreLink(chat, storage));
-                commandFactory.CreateCommand(input: inputCommand, name: "/get-links",  run: new CommandGetLinks(chat, storage));
+                string inputCommand = _chat.ReadMessage().Result;
+                var command = _commandFactory.CreateCommand(_chat, _storage, inputCommand);
+                command.Execute();
+               
             }
         }
     }

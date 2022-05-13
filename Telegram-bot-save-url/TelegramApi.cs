@@ -87,7 +87,7 @@ namespace App.MessagerApi
         }
 
 
-        public static async void SendMenuMessage(string message, string[] buttons)
+        public static async Task SendMenuMessage(string message, string[] buttons)
         {
             var buttonsList = new List<KeyboardButton>();
             foreach (var button in buttons)
@@ -105,13 +105,13 @@ namespace App.MessagerApi
 
         public static async Task SendMessage(string message)
         {
-            await Task.Run(() => bot.SendTextMessageAsync(updateMessage.Message.Chat, message));
+            await bot.SendTextMessageAsync(updateMessage.Message.Chat, message);
         }
 
         public static async Task<string> ReadMessage()
         {
             //Всё таки я узнал, чтобы убрать do while, нужно использовать web hock! Если будет вопрос оптимизации (эффективности), то можно избавится от двух циклов
-            string userMessage = "";
+            string userMessage = string.Empty;
 
             await Task.Run(() =>
             {

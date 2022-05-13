@@ -8,12 +8,12 @@ using App.Storage;
 
 namespace App.Command
 {
-    //TODO: нарушаем DRY, нужно сделать абстрактный класс для StoreLink и GetLinks
     public class CommandStoreLink : ICommand
     {
         private IChat chat;
         private IStorage storage;
-        private string currentCategoria { get; set; }
+        private string currentCategoria;
+        private string messageWithUrls;
 
         public CommandStoreLink(IChat chat, IStorage storage)
         {
@@ -23,28 +23,32 @@ namespace App.Command
 
         public void Execute()
         {
-            SelectCategoriaByInput();
-            SaveUrlsInCategoria();
+            SelectCategoriaByInput().Wait();
+            SelectUrlsByInput().Wait();
+            Task.Run(() => SaveUrlsInCategoria());
         }
 
-        private void SelectCategoriaByInput()
+        private async Task SelectCategoriaByInput()
         {
-            chat.SendMessage("Впишите категорию");
-            currentCategoria = chat.ReadMessage();
+            await chat.SendMessage("Впишите категорию");
+            currentCategoria = await chat.ReadMessage();
         }
 
-        private void SaveUrlsInCategoria()
+        private async Task SelectUrlsByInput()
+        {
+            await chat.SendMessage("Впишите url, который нужно сохранить");
+            messageWithUrls = await chat.ReadMessage();
+        }
+
+        private async Task SaveUrlsInCategoria()
         {
             if (currentCategoria != "Все")
             {
-                chat.SendMessage("Впишите url, который нужно сохранить");
-                string messageWithUrls = chat.ReadMessage();
-
                 string[] urlInMessage = messageWithUrls.Split(" ");
                 StringBuilder notUrls = new StringBuilder("");
                 foreach (var url in urlInMessage)
                 {
-                    if (Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
+                    if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                     {
                         storage.AddEntity(key: currentCategoria, value: url);
                         storage.AddEntity(key: "Все", value: url);
@@ -54,11 +58,18 @@ namespace App.Command
                         notUrls.Append($"{url} - не является url\n");
                     }
                 }
-                chat.SendMessage(notUrls.ToString());
+
+                string finalMessage = notUrls.ToString();
+                if(finalMessage == string.Empty)
+                {
+                    finalMessage = "Успешно добавлено!";
+                }
+
+                await chat.SendMessage(finalMessage.ToString());
             }
             else
             {
-                chat.SendMessage("Категория - \"Все\", является зарезервированным, вы не можете его использовать");
+                await chat.SendMessage("Категория - \"Все\", является зарезервированным, вы не можете его использовать");
             }
         }
     }

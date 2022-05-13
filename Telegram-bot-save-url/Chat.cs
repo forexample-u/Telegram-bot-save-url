@@ -15,20 +15,20 @@ namespace App.Chat
         /// Отправить одно или несколько сообщений пользователю
         /// </summary>
         /// <param name="message">Можно передать через запятую несколько сообщений</param>
-        void SendMessage(params string[] messages);
+        Task SendMessage(params string[] messages);
 
         /// <summary>
         /// Прочитать сообщение пользователя
         /// </summary>
         /// <returns></returns>
-        string ReadMessage();
+        Task<string> ReadMessage();
 
         /// <summary>
         /// Создать меню выбора пользователю
         /// </summary>
         /// <param name="message">Сообщение для меню</param>
         /// <param name="buttons">Кнопки</param>
-        void SendMenuMessage(string message, string[] buttons);
+        Task SendMenuMessage(string message, string[] buttons);
 
         /// <summary>
         /// Начать

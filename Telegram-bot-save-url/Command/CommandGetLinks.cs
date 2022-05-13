@@ -8,7 +8,6 @@ using App.Storage;
 
 namespace App.Command
 {
-    //TODO: нарушаем DRY, нужно сделать абстрактный класс для StoreLink и GetLinks
     public class CommandGetLinks : ICommand
     {
         private IChat chat;
@@ -23,17 +22,17 @@ namespace App.Command
 
         public void Execute()
         {
-            SelectCategoriaByMenu();
-            PrintByCurrentCategoria();
+            SelectCategoriaByMenu().Wait();
+            Task.Run(() => PrintByCurrentCategoria());
         }
 
-        private void SelectCategoriaByMenu()
+        private async Task SelectCategoriaByMenu()
         {
-            chat.SendMenuMessage("Выберите вашу сохранёную категорию", storage.GetEntityKeys().ToArray());
-            currentCategoria = chat.ReadMessage();
+            await chat.SendMenuMessage("Выберите вашу сохранёную категорию", storage.GetEntityKeys().ToArray());
+            currentCategoria = await chat.ReadMessage();
         }
 
-        private void PrintByCurrentCategoria()
+        private async Task PrintByCurrentCategoria()
         {
             List<string> listAllUrls = storage.GetEntityByKeys(currentCategoria);
             if (listAllUrls.Count != 0)
@@ -41,16 +40,16 @@ namespace App.Command
                 string allUrls = string.Join("\n", listAllUrls.ToArray());
                 if (allUrls.Length != 0)
                 {
-                    chat.SendMessage($"Категория: {currentCategoria}\nВключает:\n{allUrls}");
+                    await chat.SendMessage($"Категория: {currentCategoria}\nВключает:\n{allUrls}");
                 }
                 else
                 {
-                    chat.SendMessage($"Категория: \"{currentCategoria}\" - пустая");
+                    await chat.SendMessage($"Категория: \"{currentCategoria}\" - пустая");
                 }
             }
             else
             {
-                chat.SendMessage($"Категория: \"{currentCategoria}\" - не существует");
+                await chat.SendMessage($"Категория: \"{currentCategoria}\" - не существует");
             }
         }
     }

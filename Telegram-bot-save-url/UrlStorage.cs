@@ -9,7 +9,7 @@ namespace App.Storage
     /// <summary>
     /// Хранилище для пользователя
     /// </summary>
-    public class UrlStorage : IStorage
+    public class UrlStorage: IStorage
     {
         private Dictionary<string, List<string>> categoriaWithUrl = new();
 
@@ -34,7 +34,7 @@ namespace App.Storage
             {
                 categoriaWithUrl[categoria] = new List<string>();
             }
-
+            
             var urls = categoriaWithUrl[categoria];
             urls.Add(url);
             categoriaWithUrl[categoria] = urls;

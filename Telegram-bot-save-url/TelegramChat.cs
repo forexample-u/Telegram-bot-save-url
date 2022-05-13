@@ -22,24 +22,24 @@ namespace App.Chat
             TelegramApi.Stop();
         }
 
-        public void SendMessage(params string[] messages)
+        public async Task SendMessage(params string[] messages)
         {
             foreach (string message in messages)
             {
-                Task.Run(() => TelegramApi.SendMessage(message));
+                await TelegramApi.SendMessage(message);
                 Thread.Sleep(100);
             }
         }
 
-        public string ReadMessage()
+        public async Task<string> ReadMessage()
         {
-            string input = TelegramApi.ReadMessage().Result;
+            string input = await TelegramApi.ReadMessage();
             return input;
         }
 
-        public void SendMenuMessage(string message, string[] buttons)
+        public async Task SendMenuMessage(string message, string[] buttons)
         {
-            Task.Run(() => TelegramApi.SendMenuMessage(message, buttons));
+            await TelegramApi.SendMenuMessage(message, buttons);
         }
     }
 }
