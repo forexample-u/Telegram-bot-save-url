@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using App.Chat;
-using App.Storage;
+using App.Repository;
 
 namespace App.Command
 {
-    public class CommandGetLinks : ICommand
+    public class CommandGetLinks : BaseCommand, ICommand
     {
-        private IChat chat;
-        private IStorage storage;
-        private string currentCategoria { get; set; }
+        public CommandGetLinks(IChat chat, IRepository<string, string> repository) : base(chat, repository) { }
 
-        public CommandGetLinks(IChat chat, IStorage storage)
-        {
-            this.chat = chat;
-            this.storage = storage;
-        }
-
+        private string currentCategoria;
         public void Execute()
         {
             SelectCategoriaByMenu().Wait();
@@ -28,16 +20,17 @@ namespace App.Command
 
         private async Task SelectCategoriaByMenu()
         {
-            await chat.SendMenuMessage("Выберите вашу сохранёную категорию", storage.GetEntityKeys().ToArray());
+            string[] buttons = repository.GetKeys().ToArray();
+            await chat.SendMenuMessage("Выберите вашу сохранёную категорию", buttons);
             currentCategoria = await chat.ReadMessage();
         }
 
         private async Task PrintByCurrentCategoria()
         {
-            List<string> listAllUrls = storage.GetEntityByKeys(currentCategoria);
-            if (listAllUrls.Count != 0)
+            List<string> listAll = repository.GetByKey(currentCategoria).ToList();
+            if (listAll.Count != 0)
             {
-                string allUrls = string.Join("\n", listAllUrls.ToArray());
+                string allUrls = string.Join("\n", listAll);
                 if (allUrls.Length != 0)
                 {
                     await chat.SendMessage($"Категория: {currentCategoria}\nВключает:\n{allUrls}");

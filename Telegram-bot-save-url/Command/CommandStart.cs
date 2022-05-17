@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using App.Chat;
-using App.Storage;
+using App.Repository;
 
 namespace App.Command
 {
-    public class CommandStart : ICommand
+    public class CommandStart : BaseCommand, ICommand
     {
-        private IChat chat;
-        private IStorage storage;
-        private string currentCategoria { get; set; }
-
-        public CommandStart(IChat chat, IStorage storage)
-        {
-            this.chat = chat;
-            this.storage = storage;
-        }
+        public CommandStart(IChat chat, IRepository<string, string> repository) : base(chat, repository) { }
 
         public void Execute()
         {

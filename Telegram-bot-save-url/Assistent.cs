@@ -1,5 +1,5 @@
 ﻿using App.Chat;
-using App.Storage;
+using App.Repository;
 using App.Command;
 
 namespace App.Assistent
@@ -9,9 +9,9 @@ namespace App.Assistent
         public void Run()
         {
             IChat chat = new TelegramBotApiChat();
-            IStorage storage = new UrlStorage();
+            IRepository<string, string> repository = new UrlsRepository();
 
-            CommandHandler commandHandler = new CommandHandler(chat, storage);
+            CommandHandler commandHandler = new CommandHandler(chat, repository);
         }
     }
 }

@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using App.Chat;
-using App.Storage;
+using App.Repository;
 
 namespace App.Command
 {
-    public class CommandStoreLink : ICommand
+    public class CommandStoreLink : BaseCommand, ICommand
     {
-        private IChat chat;
-        private IStorage storage;
+        public CommandStoreLink(IChat chat, IRepository<string, string> repository) : base(chat, repository) { }
+
         private string currentCategoria;
         private string messageWithUrls;
-
-        public CommandStoreLink(IChat chat, IStorage storage)
-        {
-            this.chat = chat;
-            this.storage = storage;
-        }
 
         public void Execute()
         {
@@ -50,8 +43,8 @@ namespace App.Command
                 {
                     if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                     {
-                        storage.AddEntity(key: currentCategoria, value: url);
-                        storage.AddEntity(key: "Все", value: url);
+                        repository.Add(currentCategoria, url);
+                        repository.Add("Все", url);
                     }
                     else
                     {
