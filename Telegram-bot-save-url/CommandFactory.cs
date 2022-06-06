@@ -1,28 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using App.Chat;
 using App.Repository;
+using App.UserData;
 
 namespace App.Command
 {
     public class CommandFactory
     {
-        public ICommand CreateCommand(IChat chat, IRepository<string, string> repository, string input)
+        public ICommand CreateCommand(IUserData user, IChat chat, IRepositoryDictionary<string, string> repository, string input)
         {
-            if (input == "/store-link")
+            if (input == "/store_link")
             {
-                return new CommandStoreLink(chat, repository);
+                return new CommandStoreLink(user, chat, repository);
             }
-            else if (input == "/get-links")
+            else if (input == "/get_links")
             {
-                return new CommandGetLinks(chat, repository);
+                return new CommandGetLinks(user, chat, repository);
+            }
+            else if (input == "/start")
+            {
+                return new CommandStart(user, chat, repository);
             }
             else
             {
-                return new CommandStart(chat, repository);
+                return new CommandStart(user, chat, repository);
             }
         }
     }

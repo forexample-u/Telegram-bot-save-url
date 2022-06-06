@@ -4,37 +4,25 @@ using System.Text;
 using System.Threading.Tasks;
 using App.Chat;
 using App.Repository;
+using App.UserData;
 
 namespace App.Command
 {
     public class CommandStoreLink : BaseCommand, ICommand
     {
-        public CommandStoreLink(IChat chat, IRepository<string, string> repository) : base(chat, repository) { }
+        public CommandStoreLink(IUserData user, IChat chat, IRepositoryDictionary<string, string> repository) : base(user, chat, repository) { }
 
         private string currentCategoria;
         private string messageWithUrls;
 
-        public void Execute()
+        public async Task ExecuteAsync()
         {
-            SelectCategoriaByInput().Wait();
-            SelectUrlsByInput().Wait();
-            Task.Run(() => SaveUrlsInCategoria());
-        }
+            await chat.SendMessageAsync(user, "Впишите категорию");
+            currentCategoria = await chat.ReadUserMessageAsync(user);
 
-        private async Task SelectCategoriaByInput()
-        {
-            await chat.SendMessage("Впишите категорию");
-            currentCategoria = await chat.ReadMessage();
-        }
+            await chat.SendMessageAsync(user, "Впишите url, который нужно сохранить");
+            messageWithUrls = await chat.ReadUserMessageAsync(user);
 
-        private async Task SelectUrlsByInput()
-        {
-            await chat.SendMessage("Впишите url, который нужно сохранить");
-            messageWithUrls = await chat.ReadMessage();
-        }
-
-        private async Task SaveUrlsInCategoria()
-        {
             if (currentCategoria != "Все")
             {
                 string[] urlInMessage = messageWithUrls.Split(" ");
@@ -53,17 +41,19 @@ namespace App.Command
                 }
 
                 string finalMessage = notUrls.ToString();
-                if(finalMessage == string.Empty)
+                if (finalMessage == string.Empty)
                 {
                     finalMessage = "Успешно добавлено!";
                 }
 
-                await chat.SendMessage(finalMessage.ToString());
+                await chat.SendMessageAsync(user, finalMessage.ToString());
             }
             else
             {
-                await chat.SendMessage("Категория - \"Все\", является зарезервированным, вы не можете его использовать");
+                await chat.SendMessageAsync(user, "Категория - \"Все\", является зарезервированным, вы не можете его использовать");
             }
+            await Task.Delay(100);
+            await chat.SendMessageAsync(user, "Введите /store_link или /get_links");
         }
     }
 }

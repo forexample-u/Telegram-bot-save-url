@@ -9,7 +9,7 @@ namespace App.Repository
     /// <summary>
     /// Хранилище для пользователя
     /// </summary>
-    public class UrlsRepository : IRepository<string, string>
+    public class UrlsRepository : IRepositoryDictionary<string, string>
     {
         private Dictionary<string, List<string>> categoriaWithUrls = new();
 

@@ -2,7 +2,7 @@
 
 namespace App.Repository
 {
-    public interface IRepository <Entity, Item>
+    public interface IRepositoryDictionary <Entity, Item>
     {
         IEnumerable<Entity> GetKeys();
         IEnumerable<Item> GetByKey(Entity key);

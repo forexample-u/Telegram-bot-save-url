@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using App.Chat;
 using App.Repository;
+using App.UserData;
 
 namespace App.Command
 {
     public abstract class BaseCommand
     {
         protected IChat chat;
-        protected IRepository<string, string> repository;
+        protected IRepositoryDictionary<string, string> repository;
+        protected IUserData user;
 
-        public BaseCommand(IChat chat, IRepository<string, string> repository)
+        public BaseCommand(IUserData user, IChat chat, IRepositoryDictionary<string, string> repository)
         {
             this.chat = chat;
             this.repository = repository;
+            this.user = user;
         }
     }
 }

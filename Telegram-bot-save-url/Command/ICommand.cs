@@ -4,6 +4,6 @@ namespace App.Command
 {
     public interface ICommand
     {
-        void Execute();
+        Task ExecuteAsync();
     }
 }

@@ -4,21 +4,17 @@ using System.Text;
 using System.Threading.Tasks;
 using App.Chat;
 using App.Repository;
+using App.UserData;
 
 namespace App.Command
 {
     public class CommandStart : BaseCommand, ICommand
     {
-        public CommandStart(IChat chat, IRepository<string, string> repository) : base(chat, repository) { }
+        public CommandStart(IUserData user, IChat chat, IRepositoryDictionary<string, string> repository) : base(user, chat, repository) { }
 
-        public void Execute()
+        public async Task ExecuteAsync()
         {
-            Task.Run(() => SendStartMessage());
-        }
-
-        public async Task SendStartMessage()
-        {
-            await chat.SendMessage("Введите /store-link или /get-links");
+            await chat.SendMessageAsync(user, "Введите /store_link или /get_links");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using App.Chat;
-using App.Repository;
 using App.Command;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace App.Assistent
 {
@@ -8,10 +9,13 @@ namespace App.Assistent
     {
         public void Run()
         {
-            IChat chat = new TelegramBotApiChat();
-            IRepository<string, string> repository = new UrlsRepository();
+            string telegramPathJson = @"telegram-settings.json";
+            string telegramTextJson = File.ReadAllText(telegramPathJson);
+            JObject telegramSettings = JObject.Parse(telegramTextJson);
+            string telegramToken = telegramSettings["bots"]["book_url"]["TOKEN"].ToString();
 
-            CommandHandler commandHandler = new CommandHandler(chat, repository);
+            IChat chat = new TelegramBotApiChat(telegramToken);
+            CommandHandler commandHandler = new CommandHandler(chat);
         }
     }
 }
