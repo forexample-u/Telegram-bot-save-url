@@ -1,5 +1,4 @@
 ﻿using App.Assistent;
-using App.TelegramMessage;
 
-Assistent telegramAssistent = new Assistent(new TelegramMessage());
-telegramAssistent.Start();
+var application = new Application();
+application.Run();
