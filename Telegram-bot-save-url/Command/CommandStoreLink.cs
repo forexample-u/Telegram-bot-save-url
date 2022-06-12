@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using App.Chat;
-using App.Repository;
+using App.Repository.Abstract;
 using App.UserData;
 
 namespace App.Command
 {
     public class CommandStoreLink : BaseCommand, ICommand
     {
-        public CommandStoreLink(IUserData user, IChat chat, IRepositoryDictionary<string, string> repository) : base(user, chat, repository) { }
-
-        private string currentCategoria;
-        private string messageWithUrls;
+        public CommandStoreLink(IUserData user, IChat chat, IBooksRepository repository) : base(user, chat, repository) { }
 
         public async Task ExecuteAsync()
         {
             await chat.SendMessageAsync(user, "Впишите категорию");
-            currentCategoria = await chat.ReadUserMessageAsync(user);
+            string currentCategoria = await chat.ReadUserMessageAsync(user);
 
             await chat.SendMessageAsync(user, "Впишите url, который нужно сохранить");
-            messageWithUrls = await chat.ReadUserMessageAsync(user);
+            string messageWithUrls = await chat.ReadUserMessageAsync(user);
 
             if (currentCategoria != "Все")
             {
@@ -31,8 +28,7 @@ namespace App.Command
                 {
                     if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                     {
-                        repository.Add(currentCategoria, url);
-                        repository.Add("Все", url);
+                        await repository.AddBookUrlAsync(user.Id, currentCategoria, url);
                     }
                     else
                     {

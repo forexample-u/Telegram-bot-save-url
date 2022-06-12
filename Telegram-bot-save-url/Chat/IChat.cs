@@ -11,12 +11,12 @@ namespace App.Chat
         /// <summary>
         /// Начать
         /// </summary>
-        Task StartConnection();
+        Task StartConnectionAsync();
 
         /// <summary>
         /// Завершить
         /// </summary>
-        Task StopConnection();
+        Task StopConnectionAsync();
 
         /// <summary>
         /// Отправить одно или несколько сообщений пользователю
@@ -41,6 +41,6 @@ namespace App.Chat
         /// </summary>
         /// <param name="message">Сообщение для меню</param>
         /// <param name="buttons">Кнопки</param>
-        Task SendMenuMessageAsync(IUserData user, string message, string[] buttons);
+        Task SendMenuMessageAsync(IUserData user, string message, IEnumerable<string> buttons);
     }
 }

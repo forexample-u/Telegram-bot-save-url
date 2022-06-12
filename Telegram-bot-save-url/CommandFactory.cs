@@ -1,13 +1,13 @@
 ﻿using System;
 using App.Chat;
-using App.Repository;
+using App.Repository.Abstract;
 using App.UserData;
 
 namespace App.Command
 {
     public class CommandFactory
     {
-        public ICommand CreateCommand(IUserData user, IChat chat, IRepositoryDictionary<string, string> repository, string input)
+        public ICommand CreateCommand(IUserData user, IChat chat, IBooksRepository repository, string input)
         {
             if (input == "/store_link")
             {

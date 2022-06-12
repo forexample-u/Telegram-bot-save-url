@@ -1,6 +1,6 @@
 ﻿using System;
 using App.Chat;
-using App.Repository;
+using App.Repository.Abstract;
 using App.UserData;
 
 namespace App.Command
@@ -8,10 +8,10 @@ namespace App.Command
     public abstract class BaseCommand
     {
         protected IChat chat;
-        protected IRepositoryDictionary<string, string> repository;
+        protected IBooksRepository repository;
         protected IUserData user;
 
-        public BaseCommand(IUserData user, IChat chat, IRepositoryDictionary<string, string> repository)
+        public BaseCommand(IUserData user, IChat chat, IBooksRepository repository)
         {
             this.chat = chat;
             this.repository = repository;
