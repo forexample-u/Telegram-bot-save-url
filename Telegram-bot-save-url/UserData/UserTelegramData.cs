@@ -13,15 +13,10 @@ namespace App.UserData
             Username = username;
         }
 
-        public void SetMessage(string message)
-        {
-            LastMessage = message;
-        }
-
         public string FirstName { get; private set; }
         public string SecondName { get; private set; }
         public string Username { get; private set; }
         public long Id { get; private set; }
-        public string LastMessage { get; private set; }
+        public string LastMessage { get; set; }
     }
 }

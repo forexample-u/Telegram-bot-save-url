@@ -25,7 +25,7 @@ namespace App.Chat
             bot = new TelegramBotClient(TOKEN);
         }
 
-        public async Task StartConnection()
+        public async Task StartConnectionAsync()
         {
             await Task.Run(() =>
             {
@@ -44,7 +44,7 @@ namespace App.Chat
             });
         }
 
-        public async Task StopConnection()
+        public async Task StopConnectionAsync()
         {
             await bot.CloseAsync();
         }
@@ -66,7 +66,7 @@ namespace App.Chat
                     secondName: updateUser.Message.Chat.LastName,
                     username: updateUser.Message.Chat.Username
                 );
-                newUserData.SetMessage(updateUser.Message.Text);
+                newUserData.LastMessage = updateUser.Message.Text;
 
                 isUserInput = true; //Пользователь ввёл что-то
                 isAnyInput = true;
@@ -79,7 +79,7 @@ namespace App.Chat
             }
         }
 
-        public async Task SendMenuMessageAsync(IUserData user, string message, string[] buttons)
+        public async Task SendMenuMessageAsync(IUserData user, string message, IEnumerable<string> buttons)
         {
             var buttonsList = new List<KeyboardButton>();
             foreach (var button in buttons)
@@ -136,7 +136,7 @@ namespace App.Chat
                 secondName: updateUser.Message.Chat.LastName,
                 username: updateUser.Message.Chat.Username
             );
-            user.SetMessage(updateUser.Message.Text);
+            user.LastMessage = updateUser.Message.Text;
             return user;
         }
     }
