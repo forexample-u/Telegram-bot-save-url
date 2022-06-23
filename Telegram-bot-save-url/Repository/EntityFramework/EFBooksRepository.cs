@@ -24,7 +24,7 @@ namespace App.Repository.EntityFramework
             return books;
         }
 
-        public async Task<List<Book>> GetBooksByIdAsync(long id)
+        public async Task<List<Book>> GetBooksByUserIdAsync(long id)
         {
             List<Book> books = new List<Book>();
 
@@ -34,25 +34,28 @@ namespace App.Repository.EntityFramework
             return books;
         }
 
-        public async Task UpdateBookUrlAsync(long id, string categoria, string url, string newCategoria, string newUrl)
+        public async Task UpdateBookWithUrlAsync(Book oldBook, Book newBook)
         {
-            Book book = new Book() { UserId = id, Categoria = newCategoria, Url = newUrl };
+            Book book = newBook;
+            book.Id = oldBook.Id;
             context.Books.Update(book);
             await context.SaveChangesAsync();
         }
 
-        public async Task AddBookUrlAsync(long id, string categoria, string url)
+        public async Task AddBookWithUrlAsync(Book book)
         {
-            Book book = new Book() { UserId = id, Categoria = categoria, Url = url };
             await context.Books.AddAsync(book);
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteBookUrlAsync(long id, string categoria, string url)
+        public async Task DeleteBookWithUrlByIdAsync(long id)
         {
-            Book book = new Book() { UserId = id, Categoria = categoria, Url = url };
-            context.Books.Remove(book);
-            await context.SaveChangesAsync();
+            Book book = context.Books.FirstOrDefault(x => x.Id == id);
+            if (book != null)
+            {
+                context.Books.Remove(book);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

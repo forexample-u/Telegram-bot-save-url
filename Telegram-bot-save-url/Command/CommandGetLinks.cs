@@ -15,7 +15,7 @@ namespace App.Command
 
         public async Task ExecuteAsync()
         {
-            List<Book> buttons = await repository.GetBooksByIdAsync(user.Id);
+            List<Book> buttons = await repository.GetBooksByUserIdAsync(user.Id);
             if (buttons.Count != 0)
             {
                 buttons.Add(new Book { Categoria = "Все" });
@@ -26,7 +26,7 @@ namespace App.Command
                 List<Book> listAll = await repository.GetBooksByCategoriaIdAsync(user.Id, currentCategoria);
                 if (currentCategoria == "Все")
                 {
-                    listAll = await repository.GetBooksByIdAsync(user.Id);
+                    listAll = await repository.GetBooksByUserIdAsync(user.Id);
                 }
 
 

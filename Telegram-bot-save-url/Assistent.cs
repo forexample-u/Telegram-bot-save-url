@@ -11,14 +11,10 @@ namespace App.Assistent
 {
     public class Application
     {
-        private DbContextOptions<AppDbContext> MySqlConnectionStart(string connectionString)
+        private DbContextOptions<AppDbContext> PostgreSqlConnectionStart(string connectionString)
         {
             DbContextOptionsBuilder<AppDbContext> optionsBuilder = new();
-            optionsBuilder.UseMySql(
-                connectionString,
-                new MySqlServerVersion(new Version(8, 0, 11))
-            );
-            Console.WriteLine($"ConnectionString: {connectionString}");
+            optionsBuilder.UseNpgsql(connectionString);
             return optionsBuilder.Options;
         }
 
@@ -27,18 +23,16 @@ namespace App.Assistent
             //database settings
             string databaseTextJson = File.ReadAllText("appsettings.json");
             JObject databaseSettings = JObject.Parse(databaseTextJson);
-            string connectionString = databaseSettings["connectionString"].ToString();
+            string connectionString = databaseSettings["ConnectionStrings"]["DefaultConnection"].ToString();
 
-            var database = MySqlConnectionStart(connectionString);
+            var database = PostgreSqlConnectionStart(connectionString);
             IBooksRepository booksRepository = new EFBooksRepository(new AppDbContext(database));
-
-            booksRepository.AddBookUrlAsync(467, "DASDS", "asd");
 
             //telegram settings
             string telegramTextJson = File.ReadAllText("telegram-settings.json");
             JObject telegramSettings = JObject.Parse(telegramTextJson);
             string telegramToken = telegramSettings["bots"]["book_url"]["TOKEN"].ToString();
-            
+
             IChat chat = new TelegramBotApiChat(telegramToken);
             CommandHandler commandHandler = new CommandHandler(chat, booksRepository);
         }
