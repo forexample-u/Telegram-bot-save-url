@@ -1,1 +1,3 @@
-﻿<h1>Hello, it's start page!</h1>
+﻿@model IEnumerable<WebApplicationBooks.Domain.Repository.Entity.Book>
+
+<h1>Hello, it's start page! Your entity book count is - @Model.Count() </h1>
