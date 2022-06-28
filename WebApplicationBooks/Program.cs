@@ -1,5 +1,16 @@
-var builder = WebApplication.CreateBuilder(args);
+using WebApplicationBooks.Domain;
+using WebApplicationBooks.Domain.Repository;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder();
+
+builder.Services.AddControllersWithViews();
+
+string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connection));
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapControllerRoute("default", "{controller=Home}/{action=index}");
+
 app.Run();
