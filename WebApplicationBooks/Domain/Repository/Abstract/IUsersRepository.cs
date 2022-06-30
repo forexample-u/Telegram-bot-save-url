@@ -14,6 +14,6 @@ namespace WebApplicationBooks.Domain.Repository.Abstract
 
         public Task UpdateUserWithUrlAsync(User oldUser, User newUser);
 
-        public Task DeleteUserByUserIdAsync(long id);
+        public Task DeleteUserByUserIdAsync(long userId);
     }
 }

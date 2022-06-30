@@ -19,22 +19,22 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<Book>> GetBooksByCategoriaIdAsync(long id, string categoria)
+        public async Task<List<Book>> GetBooksByCategoriaIdAsync(long userId, string categoria)
         {
             List<Book> books = new List<Book>();
 
             books = await (from book in context.Books
-                           where book.UserId == id && book.Categoria == categoria
+                           where book.UserId == userId && book.Categoria == categoria
                            select book).ToListAsync();
             return books;
         }
 
-        public async Task<List<Book>> GetBooksByUserIdAsync(long id)
+        public async Task<List<Book>> GetBooksByUserIdAsync(long userId)
         {
             List<Book> books = new List<Book>();
 
             books = await (from book in context.Books
-                           where book.UserId == id
+                           where book.UserId == userId
                            select book).ToListAsync();
             return books;
         }

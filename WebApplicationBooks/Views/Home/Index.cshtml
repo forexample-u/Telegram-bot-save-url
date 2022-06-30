@@ -1,3 +1,22 @@
-﻿@model IEnumerable<WebApplicationBooks.Domain.Repository.Entity.Book>
+﻿<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" />
+    <title>app</title>
+</head>
+<body>
+    <div id="block-body">
+        <div class="block-menu">
+            <ul>
+                <li><a asp-controller="Account" asp-action="Registration">Регестрация</a></li>
+                <li><a asp-controller="Account" asp-action="Login">Вход</a></li>
+                <li><a asp-controller="Admin" asp-action="AdminContent">Admin URL</a></li>
+                <li><a asp-controller="User" asp-action="UserContent">User URL</a></li>
+            </ul>  
+        </div>
+        <div id="block-content">
 
-<h1>Hello, it's start page! Your entity book count is - @Model.Count() </h1>
+        </div>  
+    </div>   
+</body>
+</html>
