@@ -57,10 +57,10 @@ namespace WebApplicationBooks.Controllers
                 IdentityUser user = await userManager.FindByNameAsync(model.Username);
                 if (user != null)
                 {
-                    await signInManager.SignOutAsync();
-                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
-                    if (result.Succeeded)
+                    bool userIsSign = await userManager.CheckPasswordAsync(user, model.Password);
+                    if (userIsSign)
                     {
+                        await signInManager.SignInAsync(user, false);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -70,8 +70,9 @@ namespace WebApplicationBooks.Controllers
         }
 
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
     }

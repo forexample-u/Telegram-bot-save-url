@@ -4,7 +4,6 @@ using WebApplicationBooks.Domain;
 using WebApplicationBooks.Domain.Repository.Entity;
 using WebApplicationBooks.Domain.Repository.EntityFramework;
 using WebApplicationBooks.Domain.Repository.Abstract;
-using System.Collections.Generic;
 
 namespace WebApplicationBooks.Controllers
 {
@@ -19,8 +18,16 @@ namespace WebApplicationBooks.Controllers
         public async Task<IActionResult> UserContent()
         {
             IBooksRepository booksRepository = new EFBooksRepository(context);
-            List<Book> users = await booksRepository.GetBooksByUserIdAsync(1000); //TODO find id user
-            return View(users);
+            IUsersRepository usersRepository = new EFUsersRepository(context);
+            List<Book> books = await booksRepository.GetBooksByUserIdAsync(1003342); //TODO find id user
+
+            Dictionary<User, Book> usersWithBooks = new();
+            foreach (Book book in books)
+            {
+                User user = await usersRepository.GetUserByUserIdAsync(book.UserId);
+                usersWithBooks.Add(user, book);
+            }
+            return View(books);
         }
     }
 }

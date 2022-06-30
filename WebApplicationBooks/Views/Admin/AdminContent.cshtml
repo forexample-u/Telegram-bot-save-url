@@ -1,4 +1,6 @@
-﻿@model IEnumerable<WebApplicationBooks.Domain.Repository.Entity.Book>
+﻿@using WebApplicationBooks.Domain.Repository.EntityFramework
+@using WebApplicationBooks.Domain.Repository.Entity;
+@model Dictionary<User, Book>
 
 <link rel="stylesheet" href="~/lib/boostrap/css/bootstrap.min.css" />
 <script src="~/lib/boostrap/js/bootstrap.bundle.min.js"></script>
@@ -20,6 +22,9 @@
 						UserId
 					</th>
 					<th>
+						Username
+					</th>
+					<th>
 						Category
 					</th>
 					<th>
@@ -31,9 +36,10 @@
 				@foreach(var item in Model)
 				{
 					<tr>
-						<td width="20%">@item.UserId</td>
-						<td width="50%">@item.Categoria</td>
-						<td width="30%">@item.Url</td>
+						<td width="10%">@item.Value.UserId</td>
+						<td width="20%">@item.Key.Username</td>
+						<td width="35%">@item.Value.Categoria</td>
+						<td width="35%">@item.Value.Url</td>
 					</tr>
 				}
 			</tbody>

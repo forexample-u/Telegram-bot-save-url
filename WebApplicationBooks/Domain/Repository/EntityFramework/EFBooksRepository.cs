@@ -39,6 +39,12 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
             return books;
         }
 
+        public async Task<List<Book>> GetBooksAsync()
+        {
+            List<Book> books = await context.Books.ToListAsync();
+            return books;
+        }
+
         public async Task UpdateBookWithUrlAsync(Book oldBook, Book newBook)
         {
             Book book = newBook;

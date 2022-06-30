@@ -12,6 +12,8 @@ namespace WebApplicationBooks.Domain.Repository.Abstract
 
         public Task<List<Book>> GetBooksByUserIdAsync(long userId);
 
+        public Task<List<Book>> GetBooksAsync();
+
         public Task UpdateBookWithUrlAsync(Book oldBook, Book newBook);
 
         public Task DeleteBookWithUrlByIdAsync(long id);

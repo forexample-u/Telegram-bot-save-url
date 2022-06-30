@@ -1,4 +1,8 @@
-﻿<html lang="en">
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="~/css/style.css" />
@@ -9,13 +13,24 @@
         <div class="block-menu">
             <ul>
                 <li><a asp-controller="Account" asp-action="Registration">Регестрация</a></li>
-                <li><a asp-controller="Account" asp-action="Login">Вход</a></li>
-                <li><a asp-controller="Admin" asp-action="AdminContent">Admin URL</a></li>
-                <li><a asp-controller="User" asp-action="UserContent">User URL</a></li>
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    <li><a asp-controller="Account" asp-action="Login">Войти</a></li>
+                }
+                else
+                {
+                    <li><a asp-controller="Account" asp-action="Logout">Выйти</a></li>
+                    <li><a asp-controller="User" asp-action="UserContent">User URL</a></li>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li><a asp-controller="Admin" asp-action="AdminContent">Admin URL</a></li>
+                    }
+                }
+
             </ul>  
         </div>
         <div id="block-content">
-
+            
         </div>  
     </div>   
 </body>
