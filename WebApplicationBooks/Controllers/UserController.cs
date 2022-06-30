@@ -29,5 +29,21 @@ namespace WebApplicationBooks.Controllers
             }
             return View(books);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UserContent(string SearchUsername)
+        {
+            IUsersRepository usersRepository = new EFUsersRepository(context);
+            IBooksRepository booksRepository = new EFBooksRepository(context);
+            User user = await usersRepository.GetUserByUsernameAsync(SearchUsername);
+            List<Book> books = await booksRepository.GetBooksByUserIdAsync(user.UserId);
+
+            Dictionary<User, Book> usersWithBooks = new();
+            foreach (Book book in books)
+            {
+                usersWithBooks.Add(user, book);
+            }
+            return View(books);
+        }
     }
 }

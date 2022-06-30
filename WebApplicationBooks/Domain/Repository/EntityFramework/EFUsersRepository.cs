@@ -32,6 +32,17 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
             return Users;
         }
 
+        public async Task<User> GetUserByUsernameAsync(string username)
+        {
+            List<User> users = await context.Users.ToListAsync();
+            User user = users.FirstOrDefault(x => x.Username == username);
+            if (user == null)
+            {
+                return new User();
+            }
+            return user;
+        }
+
         public async Task UpdateUserWithUrlAsync(User oldUser, User newUser)
         {
             User User = newUser;

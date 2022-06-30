@@ -10,10 +10,10 @@ namespace WebApplicationBooks.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
-        public AccountController(UserManager<IdentityUser> userMgr, SignInManager<IdentityUser> signinMgr)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            userManager = userMgr;
-            signInManager = signinMgr;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         [HttpGet]

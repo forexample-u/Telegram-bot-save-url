@@ -8,6 +8,8 @@ namespace WebApplicationBooks.Domain.Repository.Abstract
     {
         public Task AddUserAsync(User user);
 
+        public Task<User> GetUserByUsernameAsync(string username);
+
         public Task<User> GetUserByUserIdAsync(long userId);
 
         public Task<List<User>> GetUsersAsync();
