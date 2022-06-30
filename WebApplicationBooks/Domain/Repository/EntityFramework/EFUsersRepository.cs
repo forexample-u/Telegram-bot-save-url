@@ -19,20 +19,16 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<User>> GetUserByUserIdAsync(long userId)
+        public async Task<User> GetUserByUserIdAsync(long userId)
         {
-            List<User> users = new List<User>();
-
-            users = await (from user in context.Users
-                           where user.UserId == userId
-                           select user).ToListAsync();
-            return users;
+            List<User> users = await context.Users.ToListAsync();
+            User user = users.FirstOrDefault(x => x.UserId == userId);
+            return user;
         }
 
         public async Task<List<User>> GetUsersAsync()
         {
-            List<User> Users = new List<User>();
-            Users = await context.Users.ToListAsync();
+            List<User> Users = await context.Users.ToListAsync();
             return Users;
         }
 
@@ -44,9 +40,9 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteUserByUserIdAsync(long id)
+        public async Task DeleteUserByUserIdAsync(long userId)
         {
-            User User = context.Users.FirstOrDefault(x => x.Id == id);
+            User User = context.Users.FirstOrDefault(x => x.UserId == userId);
             if (User != null)
             {
                 context.Users.Remove(User);

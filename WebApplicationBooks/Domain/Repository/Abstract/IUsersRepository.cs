@@ -8,12 +8,12 @@ namespace WebApplicationBooks.Domain.Repository.Abstract
     {
         public Task AddUserAsync(User user);
 
-        public Task<List<User>> GetUserByUserIdAsync(long userId);
+        public Task<User> GetUserByUserIdAsync(long userId);
 
         public Task<List<User>> GetUsersAsync();
 
         public Task UpdateUserWithUrlAsync(User oldUser, User newUser);
 
-        public Task DeleteUserByUserIdAsync(long id);
+        public Task DeleteUserByUserIdAsync(long userId);
     }
 }
