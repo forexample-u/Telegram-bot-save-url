@@ -8,9 +8,11 @@ namespace WebApplicationBooks.Domain.Repository.Abstract
     {
         public Task AddBookWithUrlAsync(Book book);
 
-        public Task<List<Book>> GetBooksByCategoriaIdAsync(long id, string categoria);
+        public Task<List<Book>> GetBooksByCategoriaIdAsync(long userId, string categoria);
 
-        public Task<List<Book>> GetBooksByUserIdAsync(long id);
+        public Task<List<Book>> GetBooksByUserIdAsync(long userId);
+
+        public Task<List<Book>> GetBooksAsync();
 
         public Task UpdateBookWithUrlAsync(Book oldBook, Book newBook);
 
