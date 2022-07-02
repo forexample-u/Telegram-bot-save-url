@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApplicationBooks.Domain;
+using Microsoft.Extensions.Logging;
+
 
 namespace WebApplicationBooks.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AppDbContext context;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(AppDbContext context)
+        public HomeController(ILogger<HomeController> logger)
         {
-            this.context = context;
+            this.logger = logger;
         }
 
-        public ActionResult Index()
+        public IActionResult Index()
         {
-            var books = context.Books;
-            return View(books);
+            logger.LogInformation("Пользователь зашёл на страницу");
+            return View();
         }
     }
 }
