@@ -10,21 +10,28 @@ namespace WebApplicationBooks.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        private readonly ILogger<AccountController> logger;
+
+        public AccountController(UserManager<IdentityUser> userManager, 
+            SignInManager<IdentityUser> signInManager,
+            ILogger<AccountController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.logger = logger;
         }
 
         [HttpGet]
         public IActionResult Registration()
         {
+            logger.LogInformation("Пользователь хочет зарегестрироватся");
             return View();
         }
 
         [HttpGet]
         public IActionResult Login()
         {
+            logger.LogInformation("Пользователь хочет войти");
             return View();
         }
 
@@ -38,8 +45,10 @@ namespace WebApplicationBooks.Controllers
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, false);
+                    logger.LogInformation($"Пользователь с ником {user.UserName} зарегестрировался!");
                     return RedirectToAction("Index", "Home");
                 }
+                logger.LogInformation("Пользователь не смог зарегестрироватся!");
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -61,9 +70,11 @@ namespace WebApplicationBooks.Controllers
                     if (userIsSign)
                     {
                         await signInManager.SignInAsync(user, false);
+                        logger.LogInformation($"Пользователь с ником {user.UserName} вошёл в портал!");
                         return RedirectToAction("Index", "Home");
                     }
                 }
+                logger.LogInformation("Пользователь не вошёл в портал!");
                 ModelState.AddModelError(nameof(LoginUser.Username), "Неверный логин или пароль");
             }
             return View(model);
@@ -72,6 +83,7 @@ namespace WebApplicationBooks.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
+            logger.LogInformation("Пользователь вышел из портала");
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
