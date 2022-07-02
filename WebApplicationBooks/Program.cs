@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder();
 builder.Host.UseSerilog();
@@ -31,6 +33,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllersWithViews();
 
 

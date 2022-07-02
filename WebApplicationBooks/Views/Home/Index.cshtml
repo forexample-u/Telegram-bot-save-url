@@ -21,6 +21,7 @@
                 {
                     <li><a asp-controller="Account" asp-action="Logout">Выйти</a></li>
                     <li><a asp-controller="User" asp-action="UserContent">User URL</a></li>
+                    <li><a asp-controller="Urls" asp-action="UrlsUsers">Все URL</a></li>
                     @if (User.IsInRole("admin"))
                     {
                         <li><a asp-controller="Admin" asp-action="AdminContent">Admin URL</a></li>
