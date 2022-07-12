@@ -7,8 +7,9 @@ namespace App.Repository.Entities
     {
         [Key]
         public long Id { get; set; }
+        public long UserId { get; set; }
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string SecondName { get; set; }
         public string Username { get; set; }
     }
 }

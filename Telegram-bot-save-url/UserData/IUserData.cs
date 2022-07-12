@@ -4,10 +4,10 @@ namespace App.UserData
 {
     public interface IUserData
     {
-        public string FirstName { get; }
-        public string SecondName { get; }
-        public string Username { get; }
-        public long Id { get; }
+        public long UserId { get; set; }
+        public string FirstName { get; set; }
+        public string SecondName { get; set; }
+        public string Username { get; set; }
         public string LastMessage { get; set; }
     }
 }

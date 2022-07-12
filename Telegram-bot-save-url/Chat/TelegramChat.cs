@@ -60,13 +60,13 @@ namespace App.Chat
             if (update.Type == UpdateType.Message)
             {
                 updateUser = update;
-                newUserData = new UserTelegramData(
-                    id: updateUser.Message.Chat.Id,
-                    firstName: updateUser.Message.Chat.FirstName,
-                    secondName: updateUser.Message.Chat.LastName,
-                    username: updateUser.Message.Chat.Username
-                );
-                newUserData.LastMessage = updateUser.Message.Text;
+                newUserData = new UserTelegramData() {
+                    UserId = updateUser.Message.Chat.Id,
+                    FirstName = updateUser.Message.Chat.FirstName,
+                    SecondName = updateUser.Message.Chat.LastName,
+                    Username = updateUser.Message.Chat.Username,
+                    LastMessage = updateUser.Message.Text
+                };
 
                 isUserInput = true; //Пользователь ввёл что-то
                 isAnyInput = true;
@@ -74,7 +74,7 @@ namespace App.Chat
                 {
                     isMenuInput = false;
                     var removeKeyboard = new ReplyKeyboardRemove();
-                    await bot.SendTextMessageAsync(newUserData.Id, "Принят ответ", replyMarkup: removeKeyboard);
+                    await bot.SendTextMessageAsync(newUserData.UserId, "Принят ответ", replyMarkup: removeKeyboard);
                 }
             }
         }
@@ -92,14 +92,14 @@ namespace App.Chat
             IReplyMarkup keyboard = new ReplyKeyboardMarkup(buttonsArray);
 
             isMenuInput = true;
-            await bot.SendTextMessageAsync(user.Id, message, replyMarkup: keyboard);
+            await bot.SendTextMessageAsync(user.UserId, message, replyMarkup: keyboard);
         }
 
         public async Task SendMessageAsync(IUserData user, params string[] messages)
         {
             foreach (string message in messages)
             {
-                await bot.SendTextMessageAsync(user.Id, message);
+                await bot.SendTextMessageAsync(user.UserId, message);
                 await Task.Delay(100);
             }
         }
@@ -112,7 +112,7 @@ namespace App.Chat
                 {
                     Thread.Sleep(100);
                 }
-                while (!(isUserInput && (newUserData.Id == user.Id)));
+                while (!(isUserInput && (newUserData.UserId == user.UserId)));
                 isUserInput = false;
             });
             return updateUser.Message.Text;
@@ -130,13 +130,13 @@ namespace App.Chat
                 isAnyInput = false;
             });
 
-            IUserData user = new UserTelegramData(
-                id: updateUser.Message.Chat.Id,
-                firstName: updateUser.Message.Chat.FirstName,
-                secondName: updateUser.Message.Chat.LastName,
-                username: updateUser.Message.Chat.Username
-            );
-            user.LastMessage = updateUser.Message.Text;
+            IUserData user = new UserTelegramData() {
+                UserId =  updateUser.Message.Chat.Id,
+                FirstName = updateUser.Message.Chat.FirstName,
+                SecondName = updateUser.Message.Chat.LastName,
+                Username = updateUser.Message.Chat.Username,
+                LastMessage = updateUser.Message.Text
+            };
             return user;
         }
     }

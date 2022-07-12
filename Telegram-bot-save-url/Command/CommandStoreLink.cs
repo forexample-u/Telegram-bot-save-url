@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using App.Chat;
 using App.Repository.Abstract;
 using App.UserData;
@@ -38,7 +36,7 @@ namespace App.Command
                 {
                     if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
                     {
-                        await repository.AddBookWithUrlAsync(new Book() { UserId = user.Id, Categoria = currentCategoria, Url = url });
+                        await repository.AddBookWithUrlAsync(new Book() { UserId = user.UserId, Categoria = currentCategoria, Url = url });
                     }
                     else
                     {

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using App.Chat;
 using App.Repository.Entities;
 using App.Repository.Abstract;
@@ -15,7 +13,7 @@ namespace App.Command
 
         public async Task<string> SelectCategory(List<Book> buttons)
 		{
-            await chat.SendMenuMessageAsync(user, "Выберите вашу сохранёную категорию", buttons.Select(x => x.Categoria));
+            await chat.SendMenuMessageAsync(user, "Выберите вашу сохранёную категорию", buttons.Select(x => x.Categoria).Distinct());
             string currentCategoria = await chat.ReadUserMessageAsync(user);
             return currentCategoria;
         }
@@ -27,10 +25,10 @@ namespace App.Command
 
         public async Task SendCurrentBooksInfo(string currentCategoria)
 		{
-            List<Book> listAll = await repository.GetBooksByCategoriaUserIdAsync(user.Id, currentCategoria);
+            List<Book> listAll = await repository.GetBooksByCategoriaUserIdAsync(user.UserId, currentCategoria);
             if (currentCategoria == "Все")
             {
-                listAll = await repository.GetBooksByUserIdAsync(user.Id);
+                listAll = await repository.GetBooksByUserIdAsync(user.UserId);
             }
 
             if (listAll.Count != 0)
@@ -53,7 +51,7 @@ namespace App.Command
 
         public async Task ExecuteAsync()
         {
-            List<Book> buttons = await repository.GetBooksByUserIdAsync(user.Id);
+            List<Book> buttons = await repository.GetBooksByUserIdAsync(user.UserId);
             if (buttons.Count != 0)
             {
                 buttons.Add(new Book { Categoria = "Все" });
