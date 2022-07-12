@@ -15,14 +15,14 @@
             <ul>
                 @if (!SignInManager.IsSignedIn(User))
                 {
-                    <li><a asp-controller="Account" asp-action="Registration">Sign Up</a></li>
-                    <li><a asp-controller="Account" asp-action="Login">Sign In</a></li>
+                    <li><a asp-controller="Account" asp-action="Registration">Зарегистрироваться</a></li>
+                    <li><a asp-controller="Account" asp-action="Login">Войти</a></li>
                 }
                 else
                 {
-                    <li><a asp-controller="Account" asp-action="Logout">Exit</a></li>
-                    <li><a asp-controller="User" asp-action="UserContent">User URL</a></li>
-                    <li><a asp-controller="Urls" asp-action="UrlsUsers">All URL</a></li>
+                    <li><a asp-controller="Account" asp-action="Logout">Выйти</a></li>
+                    <li><a asp-controller="User" asp-action="UserContent">Личный URL</a></li>
+                    <li><a asp-controller="Urls" asp-action="UrlsUsers">Полный URL</a></li>
                     @if (User.IsInRole("admin"))
                     {
                         <li><a asp-controller="Admin" asp-action="AdminContent">Admin URL</a></li>
