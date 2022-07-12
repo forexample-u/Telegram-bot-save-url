@@ -31,7 +31,6 @@ namespace App.Command
         {
             string inputCommand = await userChat.ReadUserMessageAsync(userData);
 
-            //TODO: ссылка на чат не нужна! В фабрики
             CommandFactory commandFactory = new CommandFactory();
             ICommand command = commandFactory.CreateCommand(userData, userChat, booksRepository, inputCommand);
             await command.ExecuteAsync();

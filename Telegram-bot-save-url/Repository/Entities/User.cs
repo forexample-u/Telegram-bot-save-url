@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace App.Repository.Entities
 {
-    //TODO: связать пользователя с книгами
     public class User
     {
         [Key]
