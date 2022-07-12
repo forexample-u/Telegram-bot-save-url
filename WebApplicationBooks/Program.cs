@@ -9,6 +9,7 @@ using Serilog;
 using Serilog.Events;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using WebApplicationBooks.Models;
 
 var builder = WebApplication.CreateBuilder();
 builder.Host.UseSerilog();
@@ -16,7 +17,7 @@ builder.Host.UseSerilog();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<AccountUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 

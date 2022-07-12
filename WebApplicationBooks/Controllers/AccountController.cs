@@ -8,12 +8,12 @@ namespace WebApplicationBooks.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<AccountUser> userManager;
+        private readonly SignInManager<AccountUser> signInManager;
         private readonly ILogger<AccountController> logger;
 
-        public AccountController(UserManager<IdentityUser> userManager, 
-            SignInManager<IdentityUser> signInManager,
+        public AccountController(UserManager<AccountUser> userManager, 
+            SignInManager<AccountUser> signInManager,
             ILogger<AccountController> logger)
         {
             this.userManager = userManager;
@@ -40,7 +40,7 @@ namespace WebApplicationBooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = new IdentityUser { UserName = model.Username, PasswordHash = model.Password };
+                AccountUser user = new AccountUser { UserName = model.Username, PasswordHash = model.Password, MessagerUsername = model.MessagerUsername };
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -63,7 +63,7 @@ namespace WebApplicationBooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = await userManager.FindByNameAsync(model.Username);
+                AccountUser user = await userManager.FindByNameAsync(model.Username);
                 if (user != null)
                 {
                     bool userIsSign = await userManager.CheckPasswordAsync(user, model.Password);

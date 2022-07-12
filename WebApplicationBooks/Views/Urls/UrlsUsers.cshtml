@@ -23,10 +23,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach(DtoUrls item in Model)
+				@foreach(var item in Model)
 				{
 					<tr>
-						<td width="100%">@item.Url</td>
+						<td width="100%">@item.UserUrl</td>
 					</tr>
 				}
 			</tbody>

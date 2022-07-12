@@ -4,45 +4,33 @@ using WebApplicationBooks.Domain;
 using WebApplicationBooks.Domain.Repository.Entity;
 using WebApplicationBooks.Domain.Repository.EntityFramework;
 using WebApplicationBooks.Domain.Repository.Abstract;
+using WebApplicationBooks.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplicationBooks.Controllers
 {
     public class UserController : Controller
     {
         private readonly AppDbContext context;
-        public UserController(AppDbContext context)
+        private readonly UserManager<AccountUser> userManager;
+
+        public UserController(AppDbContext context,
+            UserManager<AccountUser> userManager)
         {
+            this.userManager = userManager;
             this.context = context;
         }
 
+        [HttpGet]
         public async Task<IActionResult> UserContent()
         {
+            var loginUser = await userManager.GetUserAsync(HttpContext.User);
+
             IBooksRepository booksRepository = new EFBooksRepository(context);
             IUsersRepository usersRepository = new EFUsersRepository(context);
-            List<Book> books = await booksRepository.GetBooksByUserIdAsync(1003342); //TODO find id user
-
-            Dictionary<User, Book> usersWithBooks = new();
-            foreach (Book book in books)
-            {
-                User user = await usersRepository.GetUserByUserIdAsync(book.UserId);
-                usersWithBooks.Add(user, book);
-            }
-            return View(books);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UserContent(string SearchUsername)
-        {
-            IUsersRepository usersRepository = new EFUsersRepository(context);
-            IBooksRepository booksRepository = new EFBooksRepository(context);
-            User user = await usersRepository.GetUserByUsernameAsync(SearchUsername);
+            User user = await usersRepository.GetUserByUsernameAsync(loginUser.MessagerUsername);
             List<Book> books = await booksRepository.GetBooksByUserIdAsync(user.UserId);
 
-            Dictionary<User, Book> usersWithBooks = new();
-            foreach (Book book in books)
-            {
-                usersWithBooks.Add(user, book);
-            }
             return View(books);
         }
     }
