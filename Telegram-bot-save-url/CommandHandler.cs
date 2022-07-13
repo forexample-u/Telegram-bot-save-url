@@ -12,19 +12,22 @@ namespace App.Command
         private readonly IChat chat;
         private readonly IBooksRepository booksRepository;
         private readonly IUsersRepository usersRepository;
+        private readonly IUsersSessionsRepository usersSessionRepository;
         private List<long> clients = new List<long>();
 
-        public CommandHandler(IChat chat, 
-            IBooksRepository booksRepository,
-            IUsersRepository usersRepository)
-        {
-            this.chat = chat;
-            this.booksRepository = booksRepository;
-            this.usersRepository = usersRepository;
+        public CommandHandler(IChat chat,
+			IBooksRepository booksRepository,
+			IUsersRepository usersRepository,
+			IUsersSessionsRepository usersSessionRepository)
+		{
+			this.chat = chat;
+			this.booksRepository = booksRepository;
+			this.usersRepository = usersRepository;
+			this.usersSessionRepository = usersSessionRepository;
             chat.StartConnectionAsync();
         }
 
-        public void Start()
+		public void Start()
 		{
             while (true)
             {
@@ -40,10 +43,26 @@ namespace App.Command
 
         private async Task EventUserMessage(IUserData userData)
         {
-            string inputCommand = await chat.ReadUserMessageAsync(userData);
-            User isExistUser = await usersRepository.GetUserByUserIdAsync(userData.UserId);
+            UserSession session = await usersSessionRepository.GetSessionByUserIdAsync(userData.UserId);
+            if (session == null)
+            {
+                await usersSessionRepository.AddSessionByUserIdAsync(userData.UserId);
+                session = await usersSessionRepository.GetSessionByUserIdAsync(userData.UserId);
+            }
 
-            if (isExistUser == null)
+            string inputCommand = string.Empty;
+            if (session.InputComplete == null)
+			{
+                inputCommand = await chat.ReadUserMessageAsync(userData);
+                await usersSessionRepository.UpdateSessionByUserIdAsync(userData.UserId, new UserSession() { UserId = userData.UserId, InputComplete = inputCommand });
+            }
+			else
+			{
+                inputCommand = session.InputComplete;
+			}
+
+            User user = await usersRepository.GetUserByUserIdAsync(userData.UserId);
+            if (user == null)
             {
                 var newUser = new User()
                 {
@@ -52,12 +71,13 @@ namespace App.Command
                     SecondName = userData.SecondName,
                     Username = userData.Username,
                 };
-                usersRepository.AddUserAsync(newUser);
+                await usersRepository.AddUserAsync(newUser);
             }
-            
+
             CommandFactory commandFactory = new CommandFactory();
-            ICommand command = commandFactory.CreateCommand(userData, chat, booksRepository, inputCommand);
+            ICommand command = commandFactory.CreateCommand(userData, chat, booksRepository, usersSessionRepository, inputCommand);
             await command.ExecuteAsync();
+            await usersSessionRepository.DeleteSessionByUserIdAsync(userData.UserId);
             clients.Remove(userData.UserId);
         }
     }

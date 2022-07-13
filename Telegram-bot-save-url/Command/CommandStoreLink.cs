@@ -10,18 +10,27 @@ namespace App.Command
 {
     public class CommandStoreLink : BaseCommand, ICommand
     {
-        public CommandStoreLink(IUserData user, IChat chat, IBooksRepository repository) : base(user, chat, repository) { }
+        public CommandStoreLink(IUserData user, IChat chat, IBooksRepository repository, IUsersSessionsRepository usersSessionsRepository) : base(user, chat, repository, usersSessionsRepository) { }
 
-        public async Task<string> InsertCategory()
+
+        public async Task SendMessageCategory()
 		{
             await chat.SendMessageAsync(user, "Впишите категорию");
-            string currentCategoria = await chat.ReadUserMessageAsync(user);
+        }
+
+        public async Task<string?> InsertCategory()
+		{
+            string? currentCategoria = await chat.ReadUserMessageAsync(user);
             return currentCategoria;
+        }
+
+        public async Task SendMessageUrl()
+		{
+            await chat.SendMessageAsync(user, "Впишите url, который нужно сохранить");
         }
 
         public async Task<string> InsertUrl()
 		{
-            await chat.SendMessageAsync(user, "Впишите url, который нужно сохранить");
             string messageWithUrls = await chat.ReadUserMessageAsync(user);
             return messageWithUrls;
         }
@@ -65,7 +74,34 @@ namespace App.Command
 
         public async Task ExecuteAsync()
         {
-            string currentCategoria = await InsertCategory();
+            UserSession userSession = await usersSessionsRepository.GetSessionByUserIdAsync(user.UserId);
+            if (userSession?.PrintFirstComplete == null)
+            {
+                await SendMessageCategory();
+                userSession.PrintFirstComplete = true;
+                usersSessionsRepository.UpdateSessionByUserIdAsync(userSession.UserId, userSession);
+            }
+
+            string? currentCategoria = string.Empty;
+            if (userSession.CategoryComplete == null)
+            {
+                currentCategoria = await InsertCategory();
+                userSession.CategoryComplete = currentCategoria;
+                usersSessionsRepository.UpdateSessionByUserIdAsync(userSession.UserId, userSession);
+            }
+			else
+			{
+                currentCategoria = userSession.CategoryComplete;
+            }
+
+
+            if (userSession?.PrintSecondComplete == null)
+            {
+                await SendMessageUrl();
+                userSession.PrintSecondComplete = true;
+                usersSessionsRepository.UpdateSessionByUserIdAsync(userSession.UserId, userSession);
+            }
+
             string currentUrls = await InsertUrl();
             await SendSuccessfulAddCategoryWithUrls(currentCategoria, currentUrls);
             await SendStartMessage();

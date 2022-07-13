@@ -9,11 +9,15 @@ namespace App.Command
 {
     public class CommandGetLinks : BaseCommand, ICommand
     {
-        public CommandGetLinks(IUserData user, IChat chat, IBooksRepository repository) : base(user, chat, repository) { }
+        public CommandGetLinks(IUserData user, IChat chat, IBooksRepository repository, IUsersSessionsRepository usersSessionsRepository) : base(user, chat, repository, usersSessionsRepository) { }
 
-        public async Task<string> SelectCategory(List<Book> buttons)
+        public async Task SendMenuCategoryAsync(List<Book> buttons)
 		{
             await chat.SendMenuMessageAsync(user, "Выберите вашу сохранёную категорию", buttons.Select(x => x.Categoria).Distinct());
+        }
+
+        public async Task<string> SelectMenuCategory()
+		{
             string currentCategoria = await chat.ReadUserMessageAsync(user);
             return currentCategoria;
         }
@@ -51,17 +55,37 @@ namespace App.Command
 
         public async Task ExecuteAsync()
         {
+            UserSession userSession = await usersSessionsRepository.GetSessionByUserIdAsync(user.UserId);
+
             List<Book> buttons = await repository.GetBooksByUserIdAsync(user.UserId);
             if (buttons.Count != 0)
             {
                 buttons.Add(new Book { Categoria = "Все" });
+                
+                if (userSession.PrintFirstComplete == null)
+                {
+                    await SendMenuCategoryAsync(buttons);
+                    userSession.PrintFirstComplete = true;
+                    usersSessionsRepository.UpdateSessionByUserIdAsync(userSession.UserId, userSession);
+                }
+                
+                string currentCategoria = await SelectMenuCategory();
 
-                string currentCategoria = await SelectCategory(buttons);
-                await SendCurrentBooksInfo(currentCategoria);
+                if (userSession.PrintSecondComplete == null)
+                {
+                    await SendCurrentBooksInfo(currentCategoria);
+                    userSession.PrintSecondComplete = true;
+                    usersSessionsRepository.UpdateSessionByUserIdAsync(userSession.UserId, userSession);
+                }
             }
             else
             {
-                await chat.SendMessageAsync(user, "У вас не одной сохранённой ссылки!");
+                if (userSession.PrintFirstComplete == null)
+                {
+                    await chat.SendMessageAsync(user, "У вас не одной сохранённой ссылки!");
+                    userSession.PrintFirstComplete = true;
+                    usersSessionsRepository.UpdateSessionByUserIdAsync(userSession.UserId, userSession);
+                }
             }
             await SendStartMessage();
         }

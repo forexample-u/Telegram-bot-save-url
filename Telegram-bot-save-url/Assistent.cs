@@ -25,18 +25,21 @@ namespace App.Assistent
             JObject databaseSettings = JObject.Parse(databaseTextJson);
             string connectionString = databaseSettings["ConnectionStrings"]["DefaultConnection"].ToString();
 
-            var database = PostgreSqlConnectionStart(connectionString);
-            var context = new AppDbContext(database);
-            IBooksRepository booksRepository = new EFBooksRepository(context);
-            IUsersRepository usersRepository = new EFUsersRepository(context);
-
             //telegram settings
             string telegramTextJson = File.ReadAllText("telegram-settings.json");
             JObject telegramSettings = JObject.Parse(telegramTextJson);
             string telegramToken = telegramSettings["bots"]["book_url"]["TOKEN"].ToString();
 
+
+            var database = PostgreSqlConnectionStart(connectionString);
+            var context = new AppDbContext(database);
+            IBooksRepository booksRepository = new EFBooksRepository(context);
+            IUsersRepository usersRepository = new EFUsersRepository(context);
+            IUsersSessionsRepository usersSessionsRepository = new EFUsersSessionsRepository(context);
             IChat chat = new TelegramBotApiChat(telegramToken);
-            CommandHandler commandHandler = new CommandHandler(chat, booksRepository, usersRepository);
+
+
+            CommandHandler commandHandler = new CommandHandler(chat, booksRepository, usersRepository, usersSessionsRepository);
             commandHandler.Start();
         }
     }

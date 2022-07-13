@@ -8,7 +8,7 @@ namespace App.Command
 {
     public class CommandStart : BaseCommand, ICommand
     {
-        public CommandStart(IUserData user, IChat chat, IBooksRepository repository) : base(user, chat, repository) { }
+        public CommandStart(IUserData user, IChat chat, IBooksRepository repository, IUsersSessionsRepository usersSessionsRepository) : base(user, chat, repository, usersSessionsRepository) { }
 
         public async Task ExecuteAsync()
         {
