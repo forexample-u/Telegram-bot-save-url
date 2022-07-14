@@ -45,9 +45,9 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
 
         public async Task UpdateUserWithUrlAsync(User oldUser, User newUser)
         {
-            User User = newUser;
-            User.Id = oldUser.Id;
-            context.Users.Update(User);
+            newUser.Id = oldUser.Id;
+            context.Users.Remove(oldUser);
+            await context.Users.AddAsync(newUser);
             await context.SaveChangesAsync();
         }
 

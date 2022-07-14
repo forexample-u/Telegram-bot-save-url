@@ -9,7 +9,7 @@ namespace WebApplicationBooks.Mapping
         public MappingProfile()
         {
             this.CreateMap<Book, DtoUrls>()
-                .ForMember("UserUrl", opt => opt.MapFrom(c => c.Categoria + "/" + c.Url));
+                .ForMember(dto => dto.UserUrl, s => s.MapFrom(book => book.Categoria + "/" + book.Url));
         }
     }
 }

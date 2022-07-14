@@ -47,9 +47,9 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
 
         public async Task UpdateBookWithUrlAsync(Book oldBook, Book newBook)
         {
-            Book book = newBook;
-            book.Id = oldBook.Id;
-            context.Books.Update(book);
+            newBook.Id = oldBook.Id;
+            context.Books.Remove(oldBook);
+            await context.Books.AddAsync(newBook);
             await context.SaveChangesAsync();
         }
 
