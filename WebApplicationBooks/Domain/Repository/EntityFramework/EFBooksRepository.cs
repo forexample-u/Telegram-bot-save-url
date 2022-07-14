@@ -55,7 +55,7 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
 
         public async Task DeleteBookWithUrlByIdAsync(long id)
         {
-            Book book = context.Books.FirstOrDefault(x => x.Id == id);
+            Book book = await context.Books.FirstOrDefaultAsync(x => x.Id == id);
             if (book != null)
             {
                 context.Books.Remove(book);

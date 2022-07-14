@@ -53,7 +53,7 @@ namespace WebApplicationBooks.Domain.Repository.EntityFramework
 
         public async Task DeleteUserByUserIdAsync(long userId)
         {
-            User User = context.Users.FirstOrDefault(x => x.UserId == userId);
+            User User = await context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
             if (User != null)
             {
                 context.Users.Remove(User);
