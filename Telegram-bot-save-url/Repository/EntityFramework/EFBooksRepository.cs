@@ -36,9 +36,9 @@ namespace App.Repository.EntityFramework
 
         public async Task UpdateBookWithUrlAsync(Book oldBook, Book newBook)
         {
-            Book book = newBook;
-            book.Id = oldBook.Id;
-            context.Books.Update(book);
+            newBook.Id = oldBook.Id;
+            context.Books.Remove(oldBook);
+            await context.Books.AddAsync(newBook);
             await context.SaveChangesAsync();
         }
 
@@ -50,7 +50,7 @@ namespace App.Repository.EntityFramework
 
         public async Task DeleteBookWithUrlByIdAsync(long id)
         {
-            Book book = context.Books.FirstOrDefault(x => x.Id == id);
+            Book book = await context.Books.FirstOrDefaultAsync(x => x.Id == id);
             if (book != null)
             {
                 context.Books.Remove(book);

@@ -45,18 +45,18 @@ namespace App.Repository.EntityFramework
 
         public async Task UpdateUserWithUrlAsync(User oldUser, User newUser)
         {
-            User User = newUser;
-            User.Id = oldUser.Id;
-            context.Users.Update(User);
+            newUser.Id = oldUser.Id;
+            context.Users.Remove(oldUser);
+            await context.Users.AddAsync(newUser);
             await context.SaveChangesAsync();
         }
 
         public async Task DeleteUserByUserIdAsync(long userId)
         {
-            User User = context.Users.FirstOrDefault(x => x.UserId == userId);
-            if (User != null)
+            User user = await context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (user != null)
             {
-                context.Users.Remove(User);
+                context.Users.Remove(user);
                 await context.SaveChangesAsync();
             }
         }
