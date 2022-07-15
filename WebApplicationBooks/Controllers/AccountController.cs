@@ -40,18 +40,40 @@ namespace WebApplicationBooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                AccountUser user = new AccountUser { UserName = model.Username, PasswordHash = model.Password, MessagerUsername = model.MessagerUsername };
-                var result = await userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                var accounts = userManager.Users;
+                bool individualMessager = true;
+                foreach (var account in accounts)
                 {
-                    await signInManager.SignInAsync(user, false);
-                    logger.LogInformation($"Пользователь с ником {user.UserName} зарегестрировался!");
-                    return RedirectToAction("Index", "Home");
+                    string messager = account.MessagerUsername;
+                    if (messager == model.MessagerUsername)
+                    {
+                        individualMessager = false;
+                    }
                 }
-                logger.LogInformation("Пользователь не смог зарегестрироватся!");
-                foreach (var error in result.Errors)
+
+                
+                if (!individualMessager)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(nameof(SignUpUser.MessagerUsername), $"Пользователь с месседжером {model.MessagerUsername} уже существует");
+                }
+                else
+                {
+                    var user = new AccountUser { UserName = model.Username, PasswordHash = model.Password, MessagerUsername = model.MessagerUsername };
+                    var result = await userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        await signInManager.SignInAsync(user, false);
+                        logger.LogInformation($"Пользователь с ником {user.UserName} зарегестрировался!");
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        logger.LogInformation("Пользователь не смог зарегестрироватся!");
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
                 }
             }
             return View(model);
