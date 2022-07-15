@@ -36,7 +36,7 @@ namespace WebApplicationBooks.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registration(LoginUser model)
+        public async Task<IActionResult> Registration(SignUpUser model)
         {
             if (ModelState.IsValid)
             {
