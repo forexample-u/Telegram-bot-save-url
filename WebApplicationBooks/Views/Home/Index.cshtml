@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebApplicationBooks.Models;
+@inject SignInManager<AccountUser> SignInManager
+@inject UserManager<AccountUser> UserManager
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" />
+    <title>app</title>
+</head>
+<body>
+    <div id="block-body">
+        <div class="block-menu">
+            <ul>
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    <li><a asp-controller="Account" asp-action="Registration">Зарегистрироваться</a></li>
+                    <li><a asp-controller="Account" asp-action="Login">Войти</a></li>
+                }
+                else
+                {
+                    <li><a asp-controller="Account" asp-action="Logout">Выйти</a></li>
+                    <li><a asp-controller="User" asp-action="UserContent">Личный URL</a></li>
+                    <li><a asp-controller="Urls" asp-action="UrlsUsers">Полный URL</a></li>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li><a asp-controller="Admin" asp-action="AdminContent">Admin URL</a></li>
+                    }
+                }
+
+            </ul>  
+        </div>
+        <div id="block-content">
+            
+        </div>  
+    </div>   
+</body>
+</html>
